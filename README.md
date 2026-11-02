@@ -16,12 +16,12 @@ Esse mini-jogo foi inspirado a partir de algumas obras:
 ## 💻 Como Executar o Código:
 1. Clone este repositório:
 ```bash
-https://github.com/se4nndev/Apollone-Game.git
+https://github.com/se4nndev/SerenityCR-Game.git
 ```
 
 2. Acesse a pasta do projeto:
 ```bash
-cd Apollone-Game
+cd SerenityCR-Game
 ```
 
 3. Execute o jogo:
