@@ -1,2 +1,2 @@
 print('Hello World!')
-nome = SEANN MARAVILHOSO
+nome = input("ai")
