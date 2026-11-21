@@ -1,2 +1,1 @@
-print('Hello World!')
-nome = input("ai")
+print('vamos fazer o main em breve...')
