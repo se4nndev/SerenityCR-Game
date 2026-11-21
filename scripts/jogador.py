@@ -1,19 +1,19 @@
 import pygame
 from pygame.locals import *
 
-largura_tela = 800
-altura_tela = 600
+largura_tela = 850
+altura_tela = 750
 class Jogador(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load("imagens/serenity-nave.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (64, 64))
+        self.image = pygame.image.load("imagens/serenity-nave.png").convert_alpha() #convert_alpha mantém o fundo transparente (png)
+        self.image = pygame.transform.scale(self.image, (100, 100))
 
         self.rect = self.image.get_rect()
         self.rect.midbottom = (largura_tela // 2, altura_tela - 20)
 
-        self.velocidade = 6
+        self.velocidade = 8 #velocidade da nave
 
     def update(self):
         tecla_pressionada = pygame.key.get_pressed()
