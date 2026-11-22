@@ -13,7 +13,7 @@ class Jogador(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.midbottom = (largura_tela // 2, altura_tela - 20)
 
-        self.velocidade = 10 #velocidade da nave
+        self.velocidade = 13 #velocidade da nave
         self.vidas = 3
     
     def update(self):
