@@ -1,7 +1,7 @@
 import pygame
 from pygame.locals import *
 
-largura_tela = 850
+largura_tela = 700
 altura_tela = 750
 class Jogador(pygame.sprite.Sprite):
     def __init__(self):
@@ -13,8 +13,9 @@ class Jogador(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.midbottom = (largura_tela // 2, altura_tela - 20)
 
-        self.velocidade = 8 #velocidade da nave
-
+        self.velocidade = 10 #velocidade da nave
+        self.vidas = 3
+    
     def update(self):
         tecla_pressionada = pygame.key.get_pressed()
 

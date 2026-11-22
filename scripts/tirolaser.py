@@ -6,7 +6,7 @@ class Laser(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
 
         self.image = pygame.image.load("imagens/laser-serenity.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (25, 40))
+        self.image = pygame.transform.scale(self.image, (35, 45)) #redimensiona o tamanho do laser
 
         self.rect = self.image.get_rect()
         self.rect.midbottom = (x, y) #faz o tiro nascer na posição que o main.py mandar #...
