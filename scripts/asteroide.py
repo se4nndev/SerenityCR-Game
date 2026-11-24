@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 import random
 
-largura_tela = 700
+largura_tela = 600
 altura_tela = 750
 class Asteroide(pygame.sprite.Sprite):
     def __init__(self):
