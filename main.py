@@ -1,10 +1,12 @@
 import pygame
 from pygame.locals import *
 from sys import exit
+import random
+
 from scripts.jogador import Jogador
 from scripts.tirolaser import Laser
-from scripts.asteroide import Asteroide
-import random
+from scripts.asteroide import Asteroide 
+from telas.menu import MenuPrincipal
 
 pygame.init()
 
@@ -27,6 +29,8 @@ som_game_over = pygame.mixer.Sound("sons/game-over.wav")
 som_game_over.set_volume(0.7)
 
 tela = pygame.display.set_mode((largura_tela, altura_tela))
+menu = MenuPrincipal(tela)
+
 pygame.display.set_caption("Serenity: Cosmic Rain")
 relogio = pygame.time.Clock()
 
@@ -39,8 +43,13 @@ plano_fundo = pygame.transform.scale(plano_fundo, (largura_tela, altura_tela))
 movimentacao_fundo = 0
 velocidade_fundo = 1
 
-musicas = ["sons/musica-jogo-agitacao.wav", "sons/musica-jogo-vibes.wav", "sons/musica-jogo-tensa.wav"]
-musica_atual = 0
+musicas = ["sons/musica-jogo-agitacao.wav", 
+           "sons/musica-jogo-vibes.wav", 
+           "sons/musica-jogo-tensa.wav", 
+           "sons/musica-menu.wav", 
+           "sons/game-over.wav"]
+musica_atual = 3
+game_over_tocado = False
 FIM_MUSICA = USEREVENT + 2
 
 pygame.mixer.music.set_volume(0.7)
@@ -52,21 +61,19 @@ jogador = Jogador()
 grupo_lasers = pygame.sprite.Group()
 grupo_asteroides = pygame.sprite.Group()
 CRIAR_ASTEROIDE = USEREVENT + 1
-pygame.time.set_timer(CRIAR_ASTEROIDE, 600)
 
 pontuacao = 0
 proxima_vida = 5000
-estado = "jogando"
+estado = "menu"
 
 while True:
     relogio.tick(60)
     for event in pygame.event.get():
-        if event.type == QUIT: #aperte sair pra sair KKKKKKKKKKKKKKK
-            pygame.quit()
+        if event.type == QUIT: 
             exit()
         
         if event.type == KEYDOWN:
-            if event.key == K_ESCAPE: #aperte esc pra sair
+            if event.key == K_ESCAPE: 
                 pygame.quit() 
                 exit()
 
@@ -77,6 +84,20 @@ while True:
                     grupo_lasers.add(laser)
                     som_laser.play()
                     ultimo_tiro = tempo_atual
+
+        if event.type == MOUSEBUTTONDOWN:
+
+            if estado == "menu":
+
+                resultado = menu.verificar_clique(event.pos)
+
+                if resultado == "jogar":
+                    estado = "jogando"
+                    pygame.time.set_timer(CRIAR_ASTEROIDE, 600)
+
+                elif resultado == "sair":
+                    pygame.quit()
+                    exit()
 
         if event.type == CRIAR_ASTEROIDE:
             if len(grupo_asteroides) < 6 and estado == "jogando":
@@ -119,32 +140,70 @@ while True:
         if jogador.vidas <= 0:
             estado = "game_over"
 
-    movimentacao_fundo = movimentacao_fundo + velocidade_fundo
-    if movimentacao_fundo >= altura_tela:
-        movimentacao_fundo = 0
 
-    tela.blit(plano_fundo, (0, movimentacao_fundo))
-    tela.blit(plano_fundo, (0, movimentacao_fundo - altura_tela))
-    grupo_lasers.draw(tela)
-    grupo_asteroides.draw(tela)
+    if estado == "menu":
 
-    for explosao in explosoes[:]:
-        if pygame.time.get_ticks() - explosao[1] > 300:
-            explosoes.remove(explosao)
-        else:
-            tela.blit(imagem_explosao, explosao[0])
-    tela.blit(jogador.image, jogador.rect) #desenha a nave
+        menu.desenhar()
 
-    texto_pontos = fonte.render(f"Pontos: {pontuacao}", True, (255, 255, 255))
-    tela.blit(texto_pontos, (10, 10))
+    elif estado == "jogando" or estado == "game_over":
 
-    texto_vidas = fonte.render(f"Vidas: {max(0, jogador.vidas)}", True, (255, 255, 255))
-    tela.blit(texto_vidas, texto_vidas.get_rect(topright=(largura_tela - 10, 10)))
+        movimentacao_fundo += velocidade_fundo
+
+        if movimentacao_fundo >= altura_tela:
+            movimentacao_fundo = 0
+
+        tela.blit(plano_fundo, (0, movimentacao_fundo))
+        tela.blit(plano_fundo, (0, movimentacao_fundo - altura_tela))
+
+        grupo_lasers.draw(tela)
+        grupo_asteroides.draw(tela)
+
+        for explosao in explosoes[:]:
+
+            if pygame.time.get_ticks() - explosao[1] > 300:
+                explosoes.remove(explosao)
+
+            else:
+                tela.blit(imagem_explosao, explosao[0])
+
+        tela.blit(jogador.image, jogador.rect)
+
+        texto_pontos = fonte.render(
+            f"Pontos: {pontuacao}", True, (255, 255, 255)
+        )
+        tela.blit(texto_pontos, (10, 10))
+
+        texto_vidas = fonte.render(
+            f"Vidas: {max(0, jogador.vidas)}",
+            True,
+            (255, 255, 255)
+        )
+
+        tela.blit(
+            texto_vidas,
+            texto_vidas.get_rect(topright=(largura_tela - 10, 10))
+        )
 
     if estado == "game_over":
-        texto_fim = fonte_grande.render("GAME OVER", True, (255, 80, 80))
-        tela.blit(texto_fim, texto_fim.get_rect(center=(largura_tela // 2, altura_tela // 2)))
-        velocidade_fundo = 0
-        pygame.mixer.music.pause()
 
+        texto_fim = fonte_grande.render(
+            "GAME OVER", True, (255, 80, 80)
+        )
+
+        tela.blit(
+            texto_fim,
+            texto_fim.get_rect(
+                center=(largura_tela // 2, altura_tela // 2)
+            )
+        )
+
+        velocidade_fundo = 0
+
+        if not game_over_tocado:
+
+            pygame.mixer.music.load(musicas[4])
+            pygame.mixer.music.play()
+
+            game_over_tocado = True
+            
     pygame.display.flip()
