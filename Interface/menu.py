@@ -32,13 +32,6 @@ class MenuPrincipal:
 
     def desenhar(self, mouse):
 
-        titulo = self.fonte_titulo.render(
-            "ASTEROIDES", True, self.branco
-        )
-
-        titulo_rect = titulo.get_rect(center=(300, 200))
-        self.tela.blit(titulo, titulo_rect)
-
         self.desenhar_botao(self.botao_jogar, "JOGAR", mouse)
         self.desenhar_botao(self.botao_sair, "SAIR", mouse)
         self.desenhar_botao(self.botao_creditos, "CREDITOS", mouse)
