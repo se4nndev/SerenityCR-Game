@@ -24,9 +24,9 @@ class MenuPrincipal:
         self.azul = (30, 150, 220)
         self.ciano = (0, 220, 255)
 
-        self.botao_jogar = pygame.Rect(150, 330, 300, 65)
-        self.botao_sair = pygame.Rect(150, 410, 300, 65)
-        self.botao_creditos = pygame.Rect(150, 490, 300, 65)
+        self.botao_jogar = pygame.Rect(150, 250, 300, 65)
+        self.botao_sair = pygame.Rect(150, 340, 300, 65)
+        self.botao_creditos = pygame.Rect(150, 420, 300, 65)
 
         self.botao_voltar = pygame.Rect(150, 490, 300, 65)
 
