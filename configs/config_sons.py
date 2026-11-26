@@ -10,6 +10,9 @@ som_explosao.set_volume(0.65)
 som_game_over = pygame.mixer.Sound("sons/game-over.wav")
 som_game_over.set_volume(0.7)
 
+som_vitoria = pygame.mixer.Sound("sons/vitoria.wav")
+som_vitoria.set_volume(0.7)
+
 musicas = [
     "sons/musica-jogo-agitacao.wav",
     "sons/musica-jogo-vibes.wav",

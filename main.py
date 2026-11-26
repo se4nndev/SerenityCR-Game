@@ -13,7 +13,7 @@ from scripts.asteroide import Asteroide
 from configs.config_gerais import *
 from configs.config_sons import *
 from Interface.menu import MenuPrincipal
-
+from scripts.asteroide_chefe import AsteroideChefe
 
 tela = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
@@ -74,6 +74,10 @@ gerenciador_musica.tocar_menu()
 
 grupo_lasers = pygame.sprite.Group()
 grupo_asteroides = pygame.sprite.Group()
+
+grupo_chefe = pygame.sprite.GroupSingle()
+chefe_apareceu = False
+
 botao_voltar_menu = pygame.Rect(150, 450, 300, 65)
 
 CRIAR_ASTEROIDE = USEREVENT + 1
@@ -95,12 +99,15 @@ def reiniciar_jogo():
     global movimentacao_fundo
     global velocidade_fundo
     global estado
+    global chefe_apareceu
 
+    chefe_apareceu = False
+    
     jogador = Jogador()
 
     grupo_lasers.empty()
     grupo_asteroides.empty()
-
+    grupo_chefe.empty()
     explosoes.clear()
 
     pontuacao = 0
@@ -118,11 +125,15 @@ def reiniciar_jogo():
 def voltar_menu():
     global jogador, pontuacao, proxima_vida
     global movimentacao_fundo, velocidade_fundo, estado
+    global chefe_apareceu
 
+    chefe_apareceu = False
+    
     jogador = Jogador()
 
     grupo_lasers.empty()
     grupo_asteroides.empty()
+    grupo_chefe.empty()
     explosoes.clear()
 
     pontuacao = 0
@@ -240,10 +251,16 @@ while True:
 
                     if botao_voltar_menu.collidepoint(posicao):
                         voltar_menu()
+                        
+                elif estado == "vitoria":
+
+                    if botao_voltar_menu.collidepoint(posicao):
+                        voltar_menu()
 
         if event.type == CRIAR_ASTEROIDE:
 
-            if estado == "jogando" and len(grupo_asteroides) < 6:
+            if (estado == "jogando" and not chefe_apareceu and len(grupo_asteroides) < 6):
+                
                 grupo_asteroides.add(Asteroide())
 
         if event.type == FIM_MUSICA and estado == "jogando":
@@ -252,8 +269,18 @@ while True:
     if estado == "jogando":
 
         jogador.update()
+        
+        if pontuacao >= 12500 and not chefe_apareceu:
+
+            chefe = AsteroideChefe()
+
+            grupo_chefe.add(chefe)
+
+            chefe_apareceu = True
+            
         grupo_lasers.update()
         grupo_asteroides.update()
+        grupo_chefe.update()
 
         for asteroide in grupo_asteroides:
 
@@ -295,12 +322,57 @@ while True:
             True,
             pygame.sprite.collide_mask
         )
+        
+        if grupo_chefe.sprite:
+
+            chefe = grupo_chefe.sprite
+
+            tiros = pygame.sprite.spritecollide(
+                chefe,
+                grupo_lasers,
+                True,
+                pygame.sprite.collide_mask
+            )
+
+            if tiros:
+
+                chefe.vida -= len(tiros)
+
+                som_explosao.play()
 
         for asteroide_batido in batidas:
 
             jogador.vidas -= 1
             som_explosao.play()
+                    
+        if grupo_chefe.sprite:
 
+            chefe = grupo_chefe.sprite
+
+            if chefe.vida <= 0:
+
+                estado = "vitoria"
+
+                velocidade_fundo = 0
+
+                gerenciador_musica.pausar()
+
+                som_vitoria.play()
+
+                grupo_chefe.empty()
+
+        if grupo_chefe.sprite:
+
+            chefe = grupo_chefe.sprite
+
+            if chefe.rect.top > altura_tela:
+
+                estado = "game_over"
+
+                gerenciador_musica.pausar()
+
+                som_game_over.play()
+        
     if estado == "jogando" and jogador.vidas <= 0:
 
         estado = "game_over"
@@ -348,6 +420,7 @@ while True:
 
         grupo_lasers.draw(tela_virtual)
         grupo_asteroides.draw(tela_virtual)
+        grupo_chefe.draw(tela_virtual)
 
         tempo_atual = pygame.time.get_ticks()
 
@@ -375,6 +448,42 @@ while True:
             True,
             (255, 255, 255)
         )
+        
+        if grupo_chefe.sprite:
+
+            chefe = grupo_chefe.sprite
+
+            pygame.draw.rect(
+                tela_virtual,
+                (80, 80, 80),
+                (150, 10, 300, 25)
+            )
+
+            pygame.draw.rect(
+                tela_virtual,
+                (255, 0, 0),
+                (
+                    150,
+                    10,
+                    int(
+                        300 *
+                        chefe.vida /
+                        chefe.vida_max
+                    ),
+                    25
+                )
+            )
+
+            texto_chefe = fonte.render(
+                "ASTEROIDE GIGANTE",
+                True,
+                (255, 255, 255)
+            )
+
+            tela_virtual.blit(
+                texto_chefe,
+                (180, 40)
+            )
 
         tela_virtual.blit(texto_vidas, (10, 45))
 
@@ -388,6 +497,43 @@ while True:
 
         texto_rect = texto.get_rect(center=(300, 250))
         tela_virtual.blit(texto, texto_rect)
+
+        menu.desenhar_botao(
+            botao_voltar_menu,
+            "VOLTAR AO MENU",
+            mouse_virtual
+        )
+        
+    elif estado == "vitoria":
+
+        tela_virtual.blit(plano_fundo, (0, 0))
+
+        texto = fonte_grande.render(
+            "VITORIA!",
+            True,
+            (0, 255, 100)
+        )
+
+        tela_virtual.blit(
+            texto,
+            texto.get_rect(center=(300, 220))
+        )
+
+        fonte_vitoria = pygame.font.Font(
+            "fonte/Orbitron.ttf",
+            30
+        )
+        
+        texto2 = fonte_vitoria.render(
+            "A CHUVA COSMICA FOI DETIDA",
+            True,
+            (255, 255, 255)
+        )
+
+        tela_virtual.blit(
+            texto2,
+            texto2.get_rect(center=(300, 300))
+        )
 
         menu.desenhar_botao(
             botao_voltar_menu,

@@ -10,6 +10,7 @@ class Jogador(pygame.sprite.Sprite):
         self.image = pygame.image.load("imagens/serenity-nave.png").convert_alpha() #convert_alpha mantém o fundo transparente (png)
         self.image = pygame.transform.scale(self.image, (100, 100))
 
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect.midbottom = (largura_tela // 2, altura_tela - 20)
 

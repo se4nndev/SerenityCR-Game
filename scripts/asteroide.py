@@ -23,6 +23,7 @@ class Asteroide(pygame.sprite.Sprite):
         self.indice = 0
         self.image = self.sprites[self.indice]
 
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect = self.image.get_rect()
         self.rect.x = random.randint(0, largura_tela - self.rect.width)
         self.rect.bottom = 0
@@ -36,3 +37,4 @@ class Asteroide(pygame.sprite.Sprite):
         if self.indice >= len(self.sprites):
             self.indice = 0
         self.image = self.sprites[int(self.indice)]
+        self.mask = pygame.mask.from_surface(self.image)
