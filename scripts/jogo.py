@@ -1,5 +1,10 @@
 import pygame
+from pygame.locals import KEYDOWN, K_SPACE
+
 from scripts.jogador import Jogador
+from scripts.tirolaser import Laser
+from scripts.asteroide import Asteroide
+
 
 class Jogo:
 
