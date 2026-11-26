@@ -19,7 +19,7 @@ class Asteroide(pygame.sprite.Sprite):
         asteroide4 = pygame.transform.scale(asteroide4, (150, 150))
 
         self.sprites = [asteroide1, asteroide2, asteroide3, asteroide4]
-        #-------
+
         self.indice = 0
         self.image = self.sprites[self.indice]
 
@@ -28,13 +28,11 @@ class Asteroide(pygame.sprite.Sprite):
         self.rect.bottom = 0
 
         self.velocidade = random.randint(2, 5)
-        #-------
 
     def update(self):
         self.rect.y = self.rect.y + self.velocidade
-        #-------
+
         self.indice += 0.15
         if self.indice >= len(self.sprites):
             self.indice = 0
         self.image = self.sprites[int(self.indice)]
-        #-------
