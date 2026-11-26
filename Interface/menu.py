@@ -1,6 +1,5 @@
 import pygame
-from sys import exit
-from configs.config_gerais import largura_tela, altura_tela
+from configs.config_gerais import *
 
 class Menu:
     
@@ -19,7 +18,7 @@ class Menu:
     def desenhar_menu(self, tela):
             
         titulo = self.fonte_menu_titulo.render("SERENITY", True, (255, 255, 255))
-        subtitulo = self.fonte_menu_titulo.render("COSMIC RAIN", True, (180, 180, 255))
+        subtitulo = self.fonte_menu.render("COSMIC RAIN", True, (180, 180, 255))
         iniciar = self.fonte_menu.render("Pressione ENTER para jogar", True, (255, 255, 255))
         sair = self.fonte_menu.render("ESC para sair", True, (255, 255, 255))
             

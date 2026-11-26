@@ -11,7 +11,23 @@ import random
 
 pygame.init()
 
-tela = pygame.display.set_mode((largura_tela, altura_tela))
+tela = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
+largura_monitor, altura_monitor = tela.get_size()
+
+tela_virtual = pygame.Surface((largura_tela, altura_tela))
+
+escala = min(
+    largura_monitor / largura_tela,
+    altura_monitor / altura_tela
+)
+
+largura_escalada = int(largura_tela * escala)
+altura_escalada = int(altura_tela * escala)
+
+offset_x = (largura_monitor - largura_escalada) // 2
+offset_y = (altura_monitor - altura_escalada) // 2
+
 pygame.display.set_caption("Serenity: Cosmic Rain")
 relogio = pygame.time.Clock()
 
@@ -30,6 +46,8 @@ grupo_asteroides = pygame.sprite.Group()
 CRIAR_ASTEROIDE = USEREVENT + 1
 pygame.time.set_timer(CRIAR_ASTEROIDE, 600)
 
+fullscreen = False
+
 menu = Menu()
 
 estado = "menu"
@@ -39,6 +57,31 @@ while True:
     relogio.tick(60)
 
     for event in pygame.event.get():
+    
+        if event.type == KEYDOWN:
+            
+            if event.key == K_F11:
+
+                fullscreen = not fullscreen
+
+                if fullscreen:
+                    tela = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+                else:
+                    tela = pygame.display.set_mode((1000, 800))
+
+                largura_monitor, altura_monitor = tela.get_size()
+
+                escala = min(
+                    largura_monitor / largura_tela,
+                    altura_monitor / altura_tela
+                )
+
+                largura_escalada = int(largura_tela * escala)
+                altura_escalada = int(altura_tela * escala)
+
+                offset_x = (largura_monitor - largura_escalada) // 2
+                offset_y = (altura_monitor - altura_escalada) // 2
+    
 
         if event.type == QUIT:
             pygame.quit()
@@ -124,26 +167,28 @@ while True:
     if movimentacao_fundo >= altura_tela:
         movimentacao_fundo = 0
 
+    tela_virtual.fill((0, 0, 0))
+
     if estado == "menu":
 
-        tela.blit(plano_fundo, (0, 0))
-        menu.desenhar_menu(tela)
+        tela_virtual.blit(plano_fundo, (0, 0))
+        menu.desenhar_menu(tela_virtual)
 
     elif estado == "jogando":
 
-        tela.blit(plano_fundo, (0, movimentacao_fundo))
-        tela.blit(plano_fundo, (0, movimentacao_fundo - altura_tela))
+        tela_virtual.blit(plano_fundo, (0, movimentacao_fundo))
+        tela_virtual.blit(plano_fundo, (0, movimentacao_fundo - altura_tela))
 
-        grupo_lasers.draw(tela)
-        grupo_asteroides.draw(tela)
+        grupo_lasers.draw(tela_virtual)
+        grupo_asteroides.draw(tela_virtual)
 
         for explosao in explosoes[:]:
             if pygame.time.get_ticks() - explosao[1] > 300:
                 explosoes.remove(explosao)
             else:
-                tela.blit(imagem_explosao, explosao[0])
+                tela_virtual.blit(imagem_explosao, explosao[0])
 
-        tela.blit(jogador.image, jogador.rect)
+        tela_virtual.blit(jogador.image, jogador.rect)
 
         texto_pontos = fonte.render(
             f"Pontos: {pontuacao}",
@@ -151,7 +196,7 @@ while True:
             (255, 255, 255)
         )
 
-        tela.blit(texto_pontos, (10, 10))
+        tela_virtual.blit(texto_pontos, (10, 10))
 
         texto_vidas = fonte.render(
             f"Vidas: {max(0, jogador.vidas)}",
@@ -159,15 +204,24 @@ while True:
             (255, 255, 255)
         )
 
-        tela.blit(
+        tela_virtual.blit(
             texto_vidas,
             texto_vidas.get_rect(topright=(largura_tela - 10, 10))
         )
 
     elif estado == "game_over":
         texto_fim = fonte_grande.render("GAME OVER", True, (255, 80, 80))
-        tela.blit(texto_fim, texto_fim.get_rect(center=(largura_tela // 2, altura_tela // 2)))
+        tela_virtual.blit(texto_fim, texto_fim.get_rect(center=(largura_tela // 2, altura_tela // 2)))
         velocidade_fundo = 0
         pygame.mixer.music.pause()
+
+    tela.fill((0, 0, 0))
+
+    superficie_escalada = pygame.transform.smoothscale(
+        tela_virtual,
+        (largura_escalada, altura_escalada)
+    )
+
+    tela.blit(superficie_escalada, (offset_x, offset_y))
 
     pygame.display.flip()
