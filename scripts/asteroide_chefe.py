@@ -13,7 +13,7 @@ class AsteroideChefe(pygame.sprite.Sprite):
 
         self.image = pygame.transform.scale(
             self.image,
-            (500, 250)
+            (500, 350)
         )
 
         self.rect = self.image.get_rect()
