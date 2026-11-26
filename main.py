@@ -213,6 +213,7 @@ while True:
         texto_fim = fonte_grande.render("GAME OVER", True, (255, 80, 80))
         tela_virtual.blit(texto_fim, texto_fim.get_rect(center=(largura_tela // 2, altura_tela // 2)))
         velocidade_fundo = 0
+        pygame.mixer.music.load("sons/game-over.wav")
         pygame.mixer.music.pause()
 
     tela.fill((0, 0, 0))

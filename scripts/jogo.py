@@ -1,10 +1,5 @@
 import pygame
-import random
-
 from scripts.jogador import Jogador
-from scripts.tirolaser import Laser
-from scripts.asteroide import Asteroide
-
 
 class Jogo:
 
