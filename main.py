@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 from sys import exit
+from scripts.jogo import Jogo
 from scripts.jogador import Jogador
 from scripts.tirolaser import Laser
 from scripts.asteroide import Asteroide
@@ -160,8 +161,10 @@ while True:
             jogador.vidas = jogador.vidas - 1
             som_explosao.play()
 
-        if jogador.vidas <= 0:
+        if jogador.vidas <= 0 and estado != "game_over":
             estado = "game_over"
+            pygame.mixer.music.stop()
+            som_game_over.play()
 
     movimentacao_fundo = movimentacao_fundo + velocidade_fundo
     if movimentacao_fundo >= altura_tela:
@@ -213,8 +216,7 @@ while True:
         texto_fim = fonte_grande.render("GAME OVER", True, (255, 80, 80))
         tela_virtual.blit(texto_fim, texto_fim.get_rect(center=(largura_tela // 2, altura_tela // 2)))
         velocidade_fundo = 0
-        pygame.mixer.music.load("sons/game-over.wav")
-        pygame.mixer.music.pause()
+        pygame.mixer.music.stop()
 
     tela.fill((0, 0, 0))
 
