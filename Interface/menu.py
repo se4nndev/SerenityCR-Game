@@ -49,8 +49,8 @@ class MenuPrincipal:
 
         textos = [
             "Desenvolvimento:",
-            "Alvaro Gabriel",
-            "Anderson Antonio",
+            "Álvaro Gabriel",
+            "Anderson Antônio",
             "Seann Halley",
             "Projeto de jogo em Pygame"
         ]

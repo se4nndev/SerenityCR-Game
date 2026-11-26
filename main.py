@@ -509,7 +509,7 @@ while True:
         tela_virtual.blit(plano_fundo, (0, 0))
 
         texto = fonte_grande.render(
-            "VITORIA!",
+            "VITÓRIA!",
             True,
             (0, 255, 100)
         )
@@ -525,7 +525,7 @@ while True:
         )
         
         texto2 = fonte_vitoria.render(
-            "A CHUVA COSMICA FOI DETIDA",
+            "OS ASTEROIDES FORAM DETIDOS",
             True,
             (255, 255, 255)
         )

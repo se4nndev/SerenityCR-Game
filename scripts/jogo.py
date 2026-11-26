@@ -97,7 +97,7 @@ class Jogo:
 
             if event.type == self.CRIAR_ASTEROIDE:
 
-                if len(self.grupo_asteroides) < 6:
+                if len(self.grupo_asteroides) < 5:
 
                     asteroide = Asteroide()
                     self.grupo_asteroides.add(asteroide)
